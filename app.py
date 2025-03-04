@@ -3,4 +3,5 @@ app = Flask(__name__)
 
 @app.route('/', methods=["POST"])
 def hello_world():
+    print(token)
     return 'Hello, World!'

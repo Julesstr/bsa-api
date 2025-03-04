@@ -1,3 +1,3 @@
 Flask
 Gunicorn
-flask_limited
+flask_limiter

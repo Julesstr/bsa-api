@@ -9,8 +9,10 @@ import json
 app = Flask(__name__)
 
 limiter = Limiter(
-    app,
-    key_func=get_remote_address
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://",
 )
 
 webhook_url = os.environ.get("WEBHOOK_URL")

@@ -41,4 +41,4 @@ def receive_webhook():
     }
     response = requests.post(url, headers=headers, data=json.dumps(payload))
 
-    return response.status_code
+    return str(response.status_code), response.status_code

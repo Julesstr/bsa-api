@@ -1,13 +1,24 @@
-from flask import Flask
+from flask import Flask, request
 import os
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+import requests
+import json
+
 
 app = Flask(__name__)
 
+limiter = Limiter(
+    app,
+    key_func=get_remote_address
+)
+
 webhook_url = os.environ.get("WEBHOOK_URL")
 drip_user = os.environ.get("DRIP_USER")
-drip_token = os.environ.get("DRIP_token")
+drip_token = os.environ.get("DRIP_TOKEN")
 
 @app.route(f"/webhook/{webhook_url}", methods=["POST"])
+@limiter.limit("5 per minute")
 def receive_webhook():
     data = request.get_json()
     url = f"https://api.getdrip.com/v3/{drip_user}/shopper_activity/order"

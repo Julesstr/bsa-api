@@ -51,7 +51,6 @@ def receive_sendowl_webhook():
 @limiter.limit("5 per minute")
 def receive_calendly_webhook():
     data = request.get_json()
-    print(data)
     payload = {
         "provider": "calendly",
         "email": data["payload"]["email"],

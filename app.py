@@ -15,11 +15,11 @@ limiter = Limiter(
     storage_uri="memory://",
 )
 
-webhook_url = os.environ.get("WEBHOOK_URL")
+sendowl_webhook_url = os.environ.get("sendowl_WEBHOOK_URL")
 drip_user = os.environ.get("DRIP_USER")
 drip_token = os.environ.get("DRIP_TOKEN")
 
-@app.route(f"/webhook/{webhook_url}", methods=["POST"])
+@app.route(f"/sendowlwebhook/{sendowl_webhook_url}", methods=["POST"])
 @limiter.limit("5 per minute")
 def receive_webhook():
     data = request.get_json()

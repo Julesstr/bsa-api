@@ -15,20 +15,24 @@ limiter = Limiter(
     storage_uri="memory://",
 )
 
-sendowl_webhook_url = os.environ.get("sendowl_WEBHOOK_URL")
+sendowl_webhook_url = os.environ.get("SENDOWL_WEBHOOK_URL")
 drip_user = os.environ.get("DRIP_USER")
 drip_token = os.environ.get("DRIP_TOKEN")
 
+calendly_webhook_url = os.environ.get("CALENDLY_WEBHOOK_URL")
+
+url = f"https://api.getdrip.com/v3/{drip_user}/shopper_activity/order"
+headers = {
+    "Content-Type": "application/json",
+    "authorization": f"Basic {drip_token}",
+    "Access-Control-Allow-Origin": "*" 
+}
+    
+
 @app.route(f"/sendowlwebhook/{sendowl_webhook_url}", methods=["POST"])
 @limiter.limit("5 per minute")
-def receive_webhook():
+def receive_sendowl_webhook():
     data = request.get_json()
-    url = f"https://api.getdrip.com/v3/{drip_user}/shopper_activity/order"
-    headers = {
-        "Content-Type": "application/json",
-        "authorization": f"Basic {drip_token}",
-        "Access-Control-Allow-Origin": "*" 
-    }
 
     payload = {
         "provider": "sendowl",
@@ -37,6 +41,24 @@ def receive_webhook():
         "order_id": str(data["order"]["id"]),
         "grand_total": float(data["order"]["settled_gross"]),
         "items": [{"name": data["order"]["cart"]["cart_items"][0]["product"]["name"]}]
+
+    }
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
+
+    return str(response.status_code), response.status_code
+
+@app.route(f"/calendlywebhook/{calendly_webhook_url}", methods=["POST"])
+@limiter.limit("5 per minute")
+def receive_calendly_webhook():
+    data = request.get_json()
+
+    payload = {
+        "provider": "calendly",
+        "email": data["email"],
+        "action": "placed",
+        "order_id": data["payment"]["external_id"],
+        "grand_total": data["payment"]["amount"],
+        "items": [{"name": "One-on-One"}]
 
     }
     response = requests.post(url, headers=headers, data=json.dumps(payload))

@@ -54,10 +54,10 @@ def receive_calendly_webhook():
     print(data)
     payload = {
         "provider": "calendly",
-        "email": data["email"],
+        "email": data["payload"]["email"],
         "action": "placed",
-        "order_id": data["payment"]["external_id"],
-        "grand_total": data["payment"]["amount"],
+        "order_id": data["payload"]["payment"]["external_id"],
+        "grand_total": data["payload"]["payment"]["amount"],
         "items": [{"name": "One-on-One"}]
 
     }

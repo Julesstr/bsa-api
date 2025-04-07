@@ -51,15 +51,20 @@ def receive_sendowl_webhook():
 @limiter.limit("5 per minute")
 def receive_calendly_webhook():
     data = request.get_json()
-    payload = {
-        "provider": "calendly",
-        "email": data["payload"]["email"],
-        "action": "placed",
-        "order_id": data["payload"]["payment"]["external_id"],
-        "grand_total": data["payload"]["payment"]["amount"],
-        "items": [{"name": "One-on-One"}]
 
-    }
+    try:
+        payload = {
+            "provider": "calendly",
+            "email": data["payload"]["email"],
+            "action": "placed",
+            "order_id": data["payload"]["payment"]["external_id"],
+            "grand_total": data["payload"]["payment"]["amount"],
+            "items": [{"name": "One-on-One"}]
+
+        }
+
+    except TypeError:
+        return "Free event"
     response = requests.post(url, headers=headers, data=json.dumps(payload))
 
     return str(response.status_code), response.status_code

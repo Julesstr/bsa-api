@@ -52,10 +52,19 @@ def receive_sendowl_order_completed():
 @limiter.limit("5 per minute")
 def receive_sendowl_order_chargeback():
     data = request.get_json()
-    print(data)
 
-    return "Return"
+    payload = {
+        "provider": "sendowl",
+        "email": str(data["order"]["buyer_email"]),
+        "action": "refunded",
+        "order_id": str(data["order"]["id"]),
+        "refund_amount": float(data["order"]["settled_gross"]),
+        "items": [{"name": data["order"]["cart"]["cart_items"][0]["product"]["name"]}]
 
+    }
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
+
+    return str(response.status_code), response.status_code
 
 @app.route(f"/calendlywebhook/{calendly_webhook_url}", methods=["POST"])
 @limiter.limit("5 per minute")

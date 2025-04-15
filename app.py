@@ -50,7 +50,7 @@ def receive_sendowl_order_completed():
 
 @app.route(f"/sendowlchargeback/{sendowl_webhook_url}", methods=["POST"])
 @limiter.limit("5 per minute")
-def receive_sendowl_order_completed():
+def receive_sendowl_order_chargeback():
     data = request.get_json()
 
     return jsonify(data)

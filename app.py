@@ -52,8 +52,9 @@ def receive_sendowl_order_completed():
 @limiter.limit("5 per minute")
 def receive_sendowl_order_chargeback():
     data = request.get_json()
+    print(data)
 
-    return jsonify(data)
+    return "Return"
 
 
 @app.route(f"/calendlywebhook/{calendly_webhook_url}", methods=["POST"])

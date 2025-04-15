@@ -29,9 +29,9 @@ headers = {
 }
     
 
-@app.route(f"/sendowlwebhook/{sendowl_webhook_url}", methods=["POST"])
+@app.route(f"/sendowlcompleted/{sendowl_webhook_url}", methods=["POST"])
 @limiter.limit("5 per minute")
-def receive_sendowl_webhook():
+def receive_sendowl_order_completed():
     data = request.get_json()
 
     payload = {
@@ -46,6 +46,15 @@ def receive_sendowl_webhook():
     response = requests.post(url, headers=headers, data=json.dumps(payload))
 
     return str(response.status_code), response.status_code
+
+
+@app.route(f"/sendowlchargeback/{sendowl_webhook_url}", methods=["POST"])
+@limiter.limit("5 per minute")
+def receive_sendowl_order_completed():
+    data = request.get_json()
+    print(data)
+
+
 
 @app.route(f"/calendlywebhook/{calendly_webhook_url}", methods=["POST"])
 @limiter.limit("5 per minute")

@@ -1,6 +1,6 @@
 # README
 
-Linking SendOwl and Drip for BSA
+Using webhooks from SendOwl and Calendly to register dollar conversions on Drip via its REST API.
 
 ## Deployment
 

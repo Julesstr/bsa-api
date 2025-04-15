@@ -4,8 +4,8 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import requests
 import json
+import jsonify
 
-# Test pull
 app = Flask(__name__)
 
 limiter = Limiter(
@@ -52,8 +52,8 @@ def receive_sendowl_order_completed():
 @limiter.limit("5 per minute")
 def receive_sendowl_order_completed():
     data = request.get_json()
-    print(data)
 
+    return jsonify(data)
 
 
 @app.route(f"/calendlywebhook/{calendly_webhook_url}", methods=["POST"])
